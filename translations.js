@@ -1,15 +1,15 @@
 const RESOURCES = {
   fr: {
     greeting: 'Bonjour!',
-    greetingName: 'Bonjour {{name}}',
+    greetingName: 'Bonjour {name}',
   },
   en: {
     greeting: 'Sup',
-    greetingName: 'Sup {{name}}',
+    greetingName: 'Sup {name}',
   },
   es: {
     greeting: 'Hola',
-    greetingName: 'Hola {{name}}',
+    greetingName: 'Hola {name}',
   },
 };
 

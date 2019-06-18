@@ -5,14 +5,22 @@ import {
   View,
   I18nManager,
   Platform,
+  Image,
+  FlatList,
+  Dimensions,
   NativeModules,
 } from 'react-native';
+import { FormattedProvider, FormattedMessage } from 'react-native-globalize';
 import LANGUAGES from './translations';
-import * as RNLocalize from 'react-native-localize';
 import I18nText from './NextText';
+
+const { width } = Dimensions.get('screen');
 
 export default class App extends Component {
   render() {
+    const isRTL = I18nManager.isRTL;
+    const data = [1, 2, 3];
+
     console.log(I18nManager);
 
     const deviceLanguage =
@@ -20,15 +28,49 @@ export default class App extends Component {
         ? NativeModules.SettingsManager.settings.AppleLocale
         : NativeModules.I18nManager.localeIdentifier;
 
+    console.log(deviceLanguage);
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to Internationalization!</Text>
-        <I18nText />
-        <Text style={styles.instructions}>World</Text>
-        <Text style={styles.instructions}>{LANGUAGES['en']['greeting']}</Text>
-        <Text style={styles.instructions}>Is</Text>
-        <Text style={styles.instructions}>Languages</Text>
-      </View>
+      <FormattedProvider
+        locale={deviceLanguage.substring(0, 2)}
+        currency="USD"
+        messages={LANGUAGES}
+      >
+        <View style={styles.container}>
+          <View style={{ position: 'absolute', top: 20, right: 20 }}>
+            <Text>fun</Text>
+          </View>
+          <Text style={styles.welcome}>Welcome to Internationalization!</Text>
+          <I18nText />
+          <Text style={styles.instructions}>
+            {LANGUAGES[deviceLanguage.substring(0, 2)]['greeting']}
+          </Text>
+          <FormattedMessage message="greetingName" name="Juan" />
+
+          <View
+            style={{ height: 100, width: width / 2, marginLeft: width / 2 }}
+          >
+            <FlatList
+              data={data}
+              keyExtractor={item => item}
+              renderItem={x => (
+                <Text style={{ marginRight: 30 }}>{x.item}</Text>
+              )}
+              horizontal
+            />
+          </View>
+          <Image
+            style={[
+              { height: 50, width: 50 },
+              isRTL && { transform: [{ rotate: '180deg' }] },
+            ]}
+            source={{
+              uri:
+                'https://www.islandharvest.org/wp-content/uploads/2018/08/arrow-705x407.jpg',
+            }}
+          />
+        </View>
+      </FormattedProvider>
     );
   }
 }

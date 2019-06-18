@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, NativeModules, Platform } from 'react-native';
 import i18next from 'i18next';
+
 import { initReactI18next, useTranslation } from 'react-i18next';
 
 const RESOURCES = {
@@ -28,7 +29,14 @@ function TranslatableView(props) {
   const languageDetector = {
     type: 'languageDetector',
     async: true,
-    detect: cb => cb('en'),
+    detect: callback => {
+      deviceLanguage =
+        Platform.OS === 'ios'
+          ? NativeModules.SettingsManager.settings.AppleLocale
+          : NativeModules.I18nManager.localeIdentifier;
+
+      callback(deviceLanguage.substring(0, 2));
+    },
     init: () => {},
     cacheUserLanguage: () => {},
   };
@@ -46,7 +54,7 @@ function TranslatableView(props) {
 
   return (
     <View>
-      <Text>{t('greeting')}</Text>
+      <Text>{t('greetingName', { name: 'Paco' })}</Text>
     </View>
   );
 }
